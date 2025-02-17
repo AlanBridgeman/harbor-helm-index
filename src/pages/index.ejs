@@ -1,0 +1,13 @@
+<h1>Welcome to the <%= company %> Helm Repository</h1>
+<p>
+    To use this repository, you need to add it to your Helm client.
+</p>
+<pre>helm repo add <%= company.replaceAll(' ', '') %> https://<%= hostname %>/</pre>
+<p>
+    Once you have added the repository, you can search for charts in the repository.
+</p>
+<pre>helm search repo <%= company.replaceAll(' ', '') %></pre>
+<p>
+    To install a chart from the repository, use the following command.
+</p>
+<pre>helm install my-release <%= company.replaceAll(' ', '') %>/some-chart</pre>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <% if(typeof description !== 'undefined') { %>
+            <%# If the description is explicitly set use it %>
+            <meta name="description" content="<%= description %>">
+        <% } else if(typeof company !== 'undefined') { %>
+            <%# If the description isn't explicitly set but the company name is (company variable) then assume this a generic company Helm chart repository and set the description as such %>
+            <meta name="description" content="<% if(typeof company !== 'undefined') { %><%= company %> <% } %> Helm Repository">
+        <% } %>
+        <% if (typeof keywords !== 'undefined') { %>
+            <%# If the keywords are explicitly set use them %>
+            <meta name="keywords" content="<%= keywords %>">
+        <% } else { %>
+            <%# If the keywords aren't explicitly set then use the default keywords %>
+            <meta name="keywords" content="helm, kubernetes, repository, charts, <% if(typeof company !== 'undefined') { %><%= company %> <% } %>">
+        <% } %>
+        <% if (typeof author !== 'undefined') { %>
+            <%# If the author is explicitly set use it %>
+            <meta name="author" content="<%= author %>">
+        <% } else if (typeof company !== 'undefined') { %>
+            <%# If the author isn't explicitly set but the company name is (company variable) then use it as the author %>
+            <meta name="author" content="<%= company %>">
+        <% } %>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <% if(typeof title !== 'undefined' && title.length > 0) { %>
+            <title><% if (typeof titlePrefix !== 'undefined') { %><%= titlePrefix %><% } %><%= title %><% if (typeof titleSuffix !== 'undefined') { %><%= titleSuffix %><% } %></title>
+        <% } %>
+        <!-- Styles -->
+        <!-- Custom styling -->
+        <link rel="stylesheet" type="text/css" href="/css/style.css">
+        <link rel="stylesheet" type="text/css" href="/css/accessibility.css">
+        <%# <!-- Foundation Framework --> %>
+        <%# <link rel="stylesheet" href="/css/app.css"> %>
+        <%# <!-- SASS components --> %>
+        <%# <link rel="stylesheet" type="text/css" href="/css/components/system-themed-background.css"> %>
+        <!-- Controller specific styling -->
+        <%# Add any additional stylesheets specified within a controller etc... %>
+        <%# This can either be a singular string or a array of strings %>
+        <%# Note, that the string should be the name of the stylesheet WITHOUT the `.css` extension and exist in the `css/` directory %>
+        <% if (typeof extraStyles !== 'undefined') { %>
+            <% if (Array.isArray(extraStyles)) { %>
+                <%# Because it's an array, we need to loop through each stylesheet and include it %>
+                <% for (let style of extraStyles) { %>
+                    <link rel="stylesheet" type="text/css" href="/css/<%= style %>.css">
+                <% } %>
+            <% } else { %>
+                <%# Include the singular stylesheet %>
+                <link rel="stylesheet" type="text/css" href="/css/<%= extraStyles %>.css">
+            <% } %>
+        <% } %>
+        <!-- Scripts -->
+        <!-- Third-party scripts -->
+        <%# <script src="https://js.stripe.com/v3" async></script>                                    %>
+        <%# <script src="https://kit.fontawesome.com/c754d91c7e.js" crossorigin="anonymous"></script> %>
+        <%# <!-- Foundation Framework -->                                                      %>
+        <%# <script type="application/javascript" src="/js/foundation/main.js" defer></script> %>
+        <!-- Controller specific scripts -->
+        <%# Add any additional scripts specified within a controller etc...                                                                                                                        %>
+        <%#                                                                                                                                                                                        %>
+        <%# Note, that these can come in multiple formats as described in the table below:                                                                                                         %>
+        <%# | Type   | Description                                         | Format                                                                  | Use Cases                                                                   |  %>
+        <%# | ------ | --------------------------------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------------- |  %>
+        <%# | string | The name of the script to include                   | `<script name>`                                                         | Simple include of the script                                                |  %>
+        <%# | object | An object about the script to include               | `{ script: '<script name>', defer: <true/false> }`                      | Being more explicit about script's properties (ex. defer vs. async, etc...) |  %>
+        <%# | array  | An array of strings or objects (as described above) | `[ '<script name>', { script: '<script name>', defer: <true/false> } ]` | Include multiple scripts                                                    |  %>
+        <%#                                                                                                                                                                                                                           %>
+        <%# The string or `.script` property of the object should be the script name WITHOUT the `.js` extension and exist in the `js/` directory if it's a "local" script.                                                           %>
+        <%# Or should be the full URL if it's a "external" script                                                                                                                                                                     %>
+        <% if (typeof extraScripts !== 'undefined') { %>
+            <% if (Array.isArray(extraScripts)) { %>
+                <%# Because it's an array, we need to loop through each script and include it %>
+                <% for (let script of extraScripts) { %>
+                    <% if(typeof script === 'object') { %>
+                        <%# Because the current array items is an object we use the `.script` and `.defer` properties to include it %>
+                        <% if(script.script.startsWith('http') || script.script.startsWith('https')) { %>
+                            <%# Because the `.script` property starts with `http` or `https` we assume it's an "external" script and include it as a straight URL %>
+                            <script type="application/javascript" src="<%= script.script %>" <% if(script.defer) { %>defer<% } %>></script>
+                        <% } else { %>
+                            <%# Because the `.script` property doesn't start with `http` or `https` we assume it's a "local" script and include it as a local script (from the `js/` folder and with a `.js` extension) %>
+                            <script type="application/javascript" src="/js/<%= script.script %>.js" <% if(script.defer) { %>defer<% } %>></script>
+                        <% } %>
+                    <% } else { %>
+                        <% if(script.startsWith('http') || script.startsWith('https')) { %>
+                            <%# Because the string starts with `http` or `https` we assume it's an "external" script and include it as a straight URL %>
+                            <script type="application/javascript" src="<%= script %>"></script>
+                        <% } else { %>
+                            <%# Because the string doesn't start with `http` or `https` we assume it's a "local" script and include it as a local script (from the `js/` folder and with a `.js` extension) %>
+                            <script type="application/javascript" src="/js/<%= script %>.js" defer></script>
+                        <% } %>
+                    <% } %>
+                <% } %>
+            <% } else if (typeof extraScripts === 'object') { %>
+                <% if(extraScripts.script.startsWith('http') || extraScripts.script.startsWith('https')) { %>
+                    <%# Because the `.script` property of the singular object starts with `http` or `https` we assume it's an "external" script and include it as a straight URL %>
+                    <script type="application/javascript" src="<%= extraScripts.script %>" <% if(extraScripts.defer) { %>defer<% } %>></script>
+                <% } else { %>
+                    <%# Because the `.script` property of the singular object doesn't start with `http` or `https` we assume it's a "local" script and include it as a local script (from the `js/` folder and with a `.js` extension) %>
+                    <script type="application/javascript" src="/js/<%= extraScripts.script %>.js" <% if(extraScripts.defer) { %>defer<% } %>></script>
+                <% } %>
+            <% } else { %>
+                <% if(extraScripts.startsWith('http') || extraScripts.startsWith('https')) { %>
+                    <%# Because the singular string starts with `http` or `https` we assume it's an "external" script and include it as a straight URL %>
+                    <script type="application/javascript" src="<%= extraScripts %>"></script>
+                <% } else { %>
+                    <%# Because the singular string doesn't start with `http` or `https` we assume it's a "local" script and include it as a local script (from the `js/` folder and with a `.js` extension) %>
+                    <script type="application/javascript" src="/js/<%= extraScripts %>.js" defer></script>
+                <% } %>
+            <% } %>
+        <% } %>
+    </head>
+    <body>
+        <a id="skip-link" href="#main">Skip to main content</a>
+        <div id="contents">
+            <header>
+                <% if(typeof header !== 'undefined') { %>
+                    <%# Because the controller has explicitly set the header, we use the specified header here (within the `<header></header>` tags) %>
+                    <%- include(header) %>
+                <% } else { %>
+                    <%# Because no explicitly header was set use the default header %>
+                    <%- include('includes/header.ejs') %>
+                <% } %>
+            </header>
+            <div style="width: 100%">
+                <main id="main">
+                    <div class="container">
+                        <div class="content">
+                            <%- include(page) %>
+                        </div>
+                    </div>
+                </main>
+                <footer>
+                    <% if(typeof footer !== 'undefined') { %>
+                        <%# Because the controller has explicitly set the footer, we use the specified footer here (within the `<footer></footer>` tags) %>
+                        <%- include(footer) %>
+                    <% } else { %>
+                        <%# Because no explicitly footer was set use the default footer %>
+                        <%- include('includes/footer.ejs') %>
+                    <% } %>
+                </footer>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,16 @@
+# Ignore Yarn files
+.yarn
+.yarnrc.yml
+yarn.lock
+
+# Ignore dependencies
+node_modules
+
+# Ignore private NPM credentials
+.npmrc
+
+# Mac OS
+.DS_Store
+
+# Ignore compiled files
+dist
